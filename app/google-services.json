@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "904877407606",
+    "firebase_url": "https://gittalk2.firebaseio.com",
+    "project_id": "gittalk2",
+    "storage_bucket": "gittalk2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:904877407606:android:80f0f0e5d33a1b7f",
+        "android_client_info": {
+          "package_name": "com.example.gittalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "904877407606-algfuhgddoqpv3o7mj4tcqgaebnae9a8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gittalk",
+            "certificate_hash": "3259932f110eea4d265a2bb760236c64664f5538"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCV1OioAr8Y0NetKP2RKBzwoPDx5v-aHeE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "904877407606-g0r6g5eqcjvhmv8on0u6hb9qdr03i21t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
