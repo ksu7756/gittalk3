@@ -73,7 +73,7 @@ public class signin extends AppCompatActivity implements GoogleApiClient.OnConne
                 firebaseAuthWithGoogle(account);
             }else{
                 Toast.makeText(this,"Google Sign-In failed",  Toast.LENGTH_SHORT).show();
-            }
+            } //로그인창 접속 실패 토스트
         }
 
     }
@@ -91,7 +91,7 @@ public class signin extends AppCompatActivity implements GoogleApiClient.OnConne
                             finish();
                         }
                     }
-                });
+                });  // oauth 인증 실패 or 성공 후 인텐트 회전
 
 
     }
