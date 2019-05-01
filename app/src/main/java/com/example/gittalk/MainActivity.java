@@ -2,18 +2,25 @@ package com.example.gittalk;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.github.rahul.githuboauth.GithubAuthenticator;
 import com.github.rahul.githuboauth.SuccessCallback;
 import com.google.android.gms.auth.api.Auth;
@@ -28,10 +35,13 @@ import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.internal.FederatedSignInActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+
+    private FirebaseRecyclerAdapter<ChatMessage, MessageViewHolder> mFirebaseAdapter;
 
     public static final String MESSAGES_CHILD = "messages";
     private DatabaseReference mFIrebaseDatebaseReference;
@@ -53,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         TextView nameTextView;
         ImageView messageImageView;
         TextView messageTextView;
-        CircleImageView photoTextView;
+        CircleImageView photoImageView;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -61,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             nameTextView = itemView.findViewById(R.id.nameTextView);
             messageImageView = itemView.findViewById(R.id.messageImageview);
             messageTextView = itemView.findViewById(R.id.messageTextView);
-            photoTextView = itemView.findViewById(R.id.photoiImageview);
+            photoImageView = itemView.findViewById(R.id.photoImageview);
         }//생성자
     }
     private RecyclerView mMessageRecyclerView;
@@ -104,6 +114,49 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 mphotoUrl = mFirebaseUser.getPhotoUrl().toString();
             }
         }
+
+        Query query = mFIrebaseDatebaseReference.child(MESSAGES_CHILD);
+        FirebaseRecyclerOptions<ChatMessage> options = new FirebaseRecyclerOptions.Builder<ChatMessage>()
+                .setQuery(query,ChatMessage.class)
+                .build();
+
+        mFirebaseAdapter = new FirebaseRecyclerAdapter<ChatMessage, MessageViewHolder>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull MessageViewHolder holder, int position, ChatMessage model) {
+                    holder.messageTextView.setText(model.getText());
+                    holder.nameTextView.setText(model.getName());
+                    if(model.getPhtoUrl() == null){
+                        holder.photoImageView.setImageDrawable(ContextCompat.getDrawable(MainActivity.this,
+                                R.drawable.ic_account_circle_black_24dp));
+                    }else{
+                        Glide.with(MainActivity.this)
+                                .load(model.getPhtoUrl())
+                                .into(holder.photoImageView);
+                    }
+            }
+
+            @Override
+            public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_message,parent,false);
+
+                return new MessageViewHolder(view);
+            }
+        };
+        mMessageRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mFirebaseAdapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mFirebaseAdapter.stopListening();
     }
 
     @Override
